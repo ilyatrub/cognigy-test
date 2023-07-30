@@ -73,6 +73,7 @@ helm uninstall passgen
 - Allow more configuration for services and ingress
 - Additional refactoring and usage of _helpers is possible
 - Blue/Green deployment is not recommended to be implemented in Helm by Helm itself. This is a more suitable task for service meshes (e.g. Istio) or Ingress Controllers.
+- Create scripts to package and push chart to repo.
 
 ---
 
