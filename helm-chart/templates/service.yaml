@@ -1,0 +1,58 @@
+{{- if .Values.service.production.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "password-generator.name" . }}-production
+  namespace: {{ include "password-generator.namespace" . }}
+  labels:
+    {{- include "password-generator.service_labels" . | nindent 4 }}
+    env: production
+  annotations:
+    {{- include "password-generator.service_annotations" . | nindent 4 }}
+{{- with .Values.service.production }}
+spec:
+  type: {{ .type }}
+  selector:
+    {{- include "password-generator.full_labels" $ | nindent 4 }}
+    color: {{ $.Values.general.productionColor }}
+  ports:
+    - port: {{ .port }}
+      targetPort: 3000
+      {{- if eq .type "NodePort" -}}
+      nodePort: {{ .nodePort }}
+      {{- end -}}
+      {{- with .name -}}
+      name: {{ . }}
+      {{- end -}}
+{{- end -}}
+{{- end }}
+
+{{- if .Values.service.staging.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "password-generator.name" . }}-staging
+  namespace: {{ include "password-generator.namespace" . }}
+  labels:
+    {{- include "password-generator.service_labels" . | nindent 4 }}
+    env: staging
+  annotations:
+    {{- include "password-generator.service_annotations" . | nindent 4 }}
+{{- with .Values.service.staging }}
+spec:
+  type: {{ .type }}
+  selector:
+    {{- include "password-generator.full_labels" $ | nindent 4 }}
+    color: {{ if eq $.Values.general.productionColor "blue" }}green{{ else }}blue{{ end }}
+  ports:
+    - port: {{ .port }}
+      targetPort: 3000
+      {{- if eq .type "NodePort" -}}
+      nodePort: {{ .nodePort }}
+      {{- end -}}
+      {{- with .name -}}
+      name: {{ . }}
+      {{- end -}}
+{{- end -}}
+{{- end -}}

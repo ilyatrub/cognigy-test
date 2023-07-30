@@ -1,0 +1,9 @@
+apiVersion: v2
+name: password-generator
+version: 1.0.0
+appVersion: 1.0.0
+description: "Deploys password-generator application"
+type: application
+maintainers:
+  - name: Ilia Frolov
+    email: ilia.frolov.de@gmail.com

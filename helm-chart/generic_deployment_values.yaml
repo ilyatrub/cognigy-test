@@ -1,0 +1,64 @@
+general:
+  commonLabels: {}
+  commonAnnotations: {}
+  productionColor: blue
+
+blueDeployment:
+  enabled: true
+  replicas: 3
+  image: ilyatrub/passgen:latest
+  imagePullPolicy: IfNotPresent
+  imagePullSecretName: ""
+  command: []
+  args: []
+  env: []
+  labels: {}
+  annotations: {}
+
+greenDeployment:
+  enabled: false
+  replicas: 3
+  image: ilyatrub/passgen:latest
+  imagePullPolicy: IfNotPresent
+  imagePullSecretName: ""
+  command: []
+  args: []
+  env: []
+  labels: {}
+  annotations: {}
+
+service:
+  production:
+    enabled: true
+    # Available are ClusterIP, NodePort and LoadBalancer
+    type: ClusterIP 
+    port: 3000
+    #nodePort: 31000 # takes effect only if NodePort service type is selected
+    portName: http # optional
+    addditionalSelector: {} # optional
+  staging:
+    enabled: false
+    # Available is ClusterIP, NodePort and LoadBalancer
+    type: ClusterIP 
+    port: 3000
+    #nodePort: 31000 # takes effect only if NodePort service type is selected
+    portName: http # optional
+    addditionalSelector: {} # optional
+  labels: {}
+  annotations: {}
+
+ingress:
+  enabled: true
+  ingressClassName: ""
+  production:
+    host: passgen.example.com
+    path: /
+    pathType: Prefix
+  staging:
+    host: passgen-staging.example.com
+    path: /
+    pathType: Prefix
+  labels: {}
+  annotations: {}
+
+extraManifests: []

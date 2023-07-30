@@ -1,0 +1,50 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "password-generator.name" . }}
+  namespace: {{ include "password-generator.namespace" . }}
+  labels:
+    {{- include "password-generator.ingress_labels" . | nindent 4 }}
+  annotations:
+    {{- include "password-generator.ingress_annotations" . | nindent 4 }}
+{{- with .Values.ingress }}
+spec:
+  {{- with .ingressClassName }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  rules:
+    {{- if $.Values.service.production.enabled }}
+    - host: {{ .production.host }}
+      http:
+        paths:
+          - path: {{ .production.path }}
+            pathType: {{ .production.pathType }}
+            backend:
+              service:
+                name: {{ include "password-generator.name" $ }}-production
+                port:
+                  {{- if $.Values.service.production.portName }}
+                  name: {{ $.Values.service.production.portName }}
+                  {{- else }}
+                  number: {{ $.Values.service.production.port }}
+                  {{- end }}
+    {{- end }}
+    {{- if $.Values.service.staging.enabled }}
+    - host: {{ .staging.host }}
+      http:
+        paths:
+          - path: {{ .staging.path }}
+            pathType: {{ .staging.pathType }}
+            backend:
+              service:
+                name: {{ include "password-generator.name" $ }}-staging
+                port:
+                  {{- if $.Values.service.staging.portName }}
+                  name: {{ $.Values.service.staging.portName }}
+                  {{- else }}
+                  number: {{ $.Values.service.staging.port }}
+                  {{- end }}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
